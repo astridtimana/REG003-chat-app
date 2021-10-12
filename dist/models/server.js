@@ -5,7 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
+// import bodyParser from 'body-parser';
 const user_1 = __importDefault(require("../routes/user"));
+const errorHandler_1 = __importDefault(require("../middlewares/errorHandler"));
 // import http from 'http';
 // import * as pkg from '../../package.json'
 class Server {
@@ -24,6 +26,8 @@ class Server {
     middlewares() {
         this.app.use((0, cors_1.default)());
         this.app.use(express_1.default.json());
+        // this.app.use(bodyParser)
+        this.app.use(errorHandler_1.default);
         // this.app.use(express.urlencoded({ extended: false }));
     }
     routes() {
