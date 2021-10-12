@@ -14,8 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.getUser = exports.getUsers = exports.createUser = void 0;
 const httpException_1 = __importDefault(require("../helpers/httpException"));
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const client_1 = require("@prisma/client");
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const prisma = new client_1.PrismaClient();
 const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const existingUser = yield prisma.user.findUnique({
@@ -26,8 +27,15 @@ const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         if (existingUser) {
             return next(new httpException_1.default(400, 'Bad request'));
         }
-        const user = yield prisma.user.create({ data: req.body });
-        res.json(user);
+        const salt = bcryptjs_1.default.genSaltSync();
+        const hashedPassword = bcryptjs_1.default.hashSync(req.body.password, salt);
+        const newUser = {
+            name: req.body.name,
+            email: req.body.email,
+            password: hashedPassword
+        };
+        const user = yield prisma.user.create({ data: newUser });
+        res.json({ email: user.email, name: user.name, id: user.id });
     }
     catch (error) {
         next(new httpException_1.default(error.status, error.message));
@@ -53,8 +61,8 @@ const getUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
                 id: parseInt(req.params.uid),
             },
         });
-        if (findUserId) {
-            res.json(findUserId);
+        if (!findUserId) {
+            return res.status(404).json('Usuario no encontrado');
         }
         // deberíamos hacer un findUser by email?
         // else /* if (!findUserId) */{
@@ -66,6 +74,7 @@ const getUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         //   })
         //   res.json(findUserEmail)
         // }
+        res.json(findUserId);
     }
     catch (error) {
         next(new httpException_1.default(error.status, error.message));
