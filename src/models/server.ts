@@ -1,6 +1,5 @@
 import express, { Application } from 'express';
 import cors from 'cors';
-// import bodyParser from 'body-parser';
 import userRoutes from '../routes/user';
 import errorMiddleware from '../middlewares/errorHandler';
 // import http from 'http';
@@ -28,9 +27,8 @@ class Server {
   middlewares() {
     this.app.use(cors()); 
     this.app.use(express.json());
-    // this.app.use(bodyParser)
     this.app.use(errorMiddleware)
-    // this.app.use(express.urlencoded({ extended: false }));
+    this.app.use(express.urlencoded({ extended: false }));
   }
 
   routes() {

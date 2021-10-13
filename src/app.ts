@@ -5,6 +5,6 @@ import Server from './models/server';
 dotenv.config();
 
 // Inicializando servidor
-const server = new Server();
+export const server = new Server();
 
 server.listen();
