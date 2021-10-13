@@ -47,7 +47,6 @@ const getUsers = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 const getUser = async (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.params)
   try {
 
     // By ID
@@ -56,6 +55,7 @@ const getUser = async (req: Request, res: Response, next: NextFunction) => {
         id: parseInt(req.params.uid),
       },
     })
+    console.log(findUserId)
 
     if (!findUserId ) {
        return res.status(404).json('Usuario no encontrado')

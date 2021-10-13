@@ -1,5 +1,5 @@
 import { prismaMock } from './singleton';
-import { createUser, getUsers } from '../src/controller/user';
+import { createUser, deleteUser, getUser, getUsers } from '../src/controller/user';
 
 const mockResponse: any = () => ({
   status: jest.fn((status) => status),
@@ -13,11 +13,23 @@ afterEach(() => {
 });
 
 
-const req:any ={
+const req:any = {
   body:{
     name: 'Rich',
     email: 'rich@prisma.io',
     password:'holis3'
+  }
+}
+
+const reqId:any = {
+  params:{
+    uid: 1
+  }
+}
+
+const reqIdErr:any = {
+  params:{
+    uid: 5
   }
 }
 
@@ -70,9 +82,61 @@ describe('GET', () => {
 
 /************ GET/:uid ************/
 
+describe('GET/:uid', () => {
+  it('should get requested user from DB', async () => { 
+    const res = mockResponse(); 
+
+    // POST user
+    prismaMock.user.create.mockResolvedValue(userInDB);
+    await createUser(req, res, next);
+
+    // GET user
+    prismaMock.user.findUnique.mockResolvedValue(userInDB)
+    await getUser(reqId, res, next);
+    expect(res.json.mock.calls[0][0]).toMatchObject(userResJson);
+  });
+
+  it('should get 404', async () => { 
+    const res = mockResponse(); 
+    prismaMock.user.findUnique({
+      where: {
+        id: 1,
+      },
+    })
+    await getUser(reqIdErr, res, next);
+    expect(next).toHaveBeenCalled();
+  });
+})
+
 
 /************ PUT ************/
 
 
 
 /************ DELETE ************/
+
+describe('GET/:uid', () => {
+  it('should get requested user from DB', async () => { 
+    const res = mockResponse(); 
+
+    // POST user
+    prismaMock.user.create.mockResolvedValue(userInDB);
+    await createUser(req, res, next);
+
+    // GET user
+    prismaMock.user.delete.mockResolvedValue(userInDB)
+    await deleteUser(reqId, res, next);
+    expect(res.json.mock.calls[0][0]).toMatchObject(userResJson);
+  });
+
+  it('should get error', async () => { 
+    const res = mockResponse(); 
+    prismaMock.user.delete({
+      where: {
+        id: 10,
+      },
+    })
+    await deleteUser(reqIdErr, res, next);
+    expect(next).toHaveBeenCalled();
+  });
+})

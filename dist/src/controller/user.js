@@ -52,7 +52,6 @@ const getUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.getUsers = getUsers;
 const getUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.params);
     try {
         // By ID
         const findUserId = yield client_1.default.user.findUnique({
@@ -60,6 +59,7 @@ const getUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
                 id: parseInt(req.params.uid),
             },
         });
+        console.log(findUserId);
         if (!findUserId) {
             return res.status(404).json('Usuario no encontrado');
         }
