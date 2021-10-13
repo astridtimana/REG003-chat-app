@@ -1,12 +1,6 @@
 import { prismaMock } from './singleton';
 import {createUser} from '../src/controller/user';
 
-// const mockResponse: any = () => {
-//   const res: any = {};
-//   res.status = jest.fn().mockReturnThis();
-//   res.json = jest.fn((body) => body);
-//   return res;
-// };
 const next = jest.fn();
 
 test('should create new user ', async () => { 
