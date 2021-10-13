@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import HttpException from "../helpers/httpException";
-import { PrismaClient } from '@prisma/client';
+import prisma from "../db/client";
 import bcrypt from 'bcryptjs';
-const prisma = new PrismaClient();
+
 
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {

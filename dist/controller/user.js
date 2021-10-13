@@ -14,12 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.getUser = exports.getUsers = exports.createUser = void 0;
 const httpException_1 = __importDefault(require("../helpers/httpException"));
-const client_1 = require("@prisma/client");
+const client_1 = __importDefault(require("../db/client"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const prisma = new client_1.PrismaClient();
 const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const existingUser = yield prisma.user.findUnique({
+        const existingUser = yield client_1.default.user.findUnique({
             where: {
                 email: req.body.email,
             },
@@ -34,7 +33,7 @@ const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
             email: req.body.email,
             password: hashedPassword
         };
-        const user = yield prisma.user.create({ data: newUser });
+        const user = yield client_1.default.user.create({ data: newUser });
         res.json({ email: user.email, name: user.name, id: user.id });
     }
     catch (error) {
@@ -44,7 +43,7 @@ const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
 exports.createUser = createUser;
 const getUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const allUsers = yield prisma.user.findMany();
+        const allUsers = yield client_1.default.user.findMany();
         res.json(allUsers);
     }
     catch (error) {
@@ -56,7 +55,7 @@ const getUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
     console.log(req.params);
     try {
         // By ID
-        const findUserId = yield prisma.user.findUnique({
+        const findUserId = yield client_1.default.user.findUnique({
             where: {
                 id: parseInt(req.params.uid),
             },
@@ -83,7 +82,7 @@ const getUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
 exports.getUser = getUser;
 const updateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const updatedUser = yield prisma.user.update({
+        const updatedUser = yield client_1.default.user.update({
             where: {
                 id: Number(req.params.uid),
             },
@@ -102,7 +101,7 @@ const updateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
 exports.updateUser = updateUser;
 const deleteUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const deleteUser = yield prisma.user.delete({
+        const deleteUser = yield client_1.default.user.delete({
             where: {
                 id: Number(req.params.uid),
             },
