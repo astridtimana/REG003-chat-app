@@ -55,7 +55,7 @@ const getUser = async (req: Request, res: Response, next: NextFunction) => {
         id: parseInt(req.params.uid),
       },
     })
-    console.log(findUserId)
+    // console.log(findUserId)
 
     if (!findUserId ) {
        return res.status(404).json('Usuario no encontrado')

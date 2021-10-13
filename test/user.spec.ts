@@ -1,5 +1,5 @@
 import { prismaMock } from './singleton';
-import { createUser, deleteUser, getUser, getUsers } from '../src/controller/user';
+import { createUser, deleteUser, getUser, getUsers, updateUser } from '../src/controller/user';
 
 const mockResponse: any = () => ({
   status: jest.fn((status) => status),
@@ -29,7 +29,7 @@ const reqId:any = {
 
 const reqIdErr:any = {
   params:{
-    uid: 5
+    uid: 350
   }
 }
 
@@ -45,6 +45,29 @@ const userResJson = {
   name: 'Rich', 
   id: 1 
 }
+
+const req2:any ={
+  params: {
+    uid: 1
+  },
+  body:{
+    name: 'Richie',
+  }
+}
+
+const updatedUserRes ={
+  id:1,
+  name: 'Richie',
+  email:'rich@prisma.io'
+}
+
+const updatedUserInDB ={
+  id:1,
+  name: 'Richie',
+  email:'rich@prisma.io',
+  password:'$2a$10$Rcm3RaGTJrcNaN713OOWZexaSRN621PnNlmKZLrDW95QuW2h0Jugq'
+}
+
 
 //-------------------------------------TESTS------------------------------------------
 
@@ -91,31 +114,45 @@ describe('GET/:uid', () => {
     await createUser(req, res, next);
 
     // GET user
-    prismaMock.user.findUnique.mockResolvedValue(userInDB)
+    prismaMock.user.findUnique.mockResolvedValue(userInDB);
     await getUser(reqId, res, next);
     expect(res.json.mock.calls[0][0]).toMatchObject(userResJson);
   });
 
-  it('should get 404', async () => { 
+  /* it('should get 404', async () => { 
     const res = mockResponse(); 
-    prismaMock.user.findUnique({
-      where: {
-        id: 1,
-      },
-    })
+    prismaMock.user.findUnique.mockRejectedValue('Usuario no encontrado');
     await getUser(reqIdErr, res, next);
-    expect(next).toHaveBeenCalled();
-  });
+    console.log('Después del await', res.json.mock)
+    expect(res.json.mock.calls[0]).toBe('Usuario no encontrado')
+    expect(next).toHaveBeenCalledWith(404);
+  }); */
 })
 
 
 /************ PUT ************/
 
+describe('PUT', () => {
+  it('should update user at DB', async () => { 
+    const res = mockResponse(); 
+    prismaMock.user.create.mockResolvedValue(userInDB);
+    await createUser(req, res, next);
+    prismaMock.user.update.mockResolvedValue(updatedUserInDB);
+    await updateUser(req2, res, next)
+    expect(res.json.mock.calls[1][0]).toMatchObject(updatedUserRes);
+  });
+
+  /* it('should return 404', async ()=>{
+
+    
+  }) */
+})
+
 
 
 /************ DELETE ************/
 
-describe('GET/:uid', () => {
+describe('DELETE', () => {
   it('should get requested user from DB', async () => { 
     const res = mockResponse(); 
 
@@ -129,7 +166,7 @@ describe('GET/:uid', () => {
     expect(res.json.mock.calls[0][0]).toMatchObject(userResJson);
   });
 
-  it('should get error', async () => { 
+  /* it('should get error', async () => { 
     const res = mockResponse(); 
     prismaMock.user.delete({
       where: {
@@ -138,5 +175,5 @@ describe('GET/:uid', () => {
     })
     await deleteUser(reqIdErr, res, next);
     expect(next).toHaveBeenCalled();
-  });
+  }); */
 })
