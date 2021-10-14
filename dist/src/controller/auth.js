@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.login = void 0;
 const client_1 = __importDefault(require("../db/client"));
 const httpException_1 = __importDefault(require("../helpers/httpException"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
@@ -40,4 +41,5 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
         next(new httpException_1.default(error.status, error.message));
     }
 });
+exports.login = login;
 //# sourceMappingURL=auth.js.map

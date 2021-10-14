@@ -1,7 +1,8 @@
 import express, { Application } from 'express';
 import cors from 'cors';
 import userRoutes from '../routes/user';
-import authRoutes from '../routes/auth'
+import authRoutes from '../routes/auth';
+import chatRoutes from '../routes/chat';
 import errorMiddleware from '../middlewares/errorHandler';
 // import http from 'http';
 // import * as pkg from '../../package.json'
@@ -11,7 +12,8 @@ class Server {
   private port: String;
   private apiPaths = {
     users: '/users',
-    auth: '/auth'
+    auth: '/auth',
+    chat: '/chat'
   }
 
   constructor() {
@@ -36,6 +38,7 @@ class Server {
   routes() {
     this.app.use(this.apiPaths.users, userRoutes)
     this.app.use(this.apiPaths.auth, authRoutes)
+    this.app.use(this.apiPaths.chat, chatRoutes)
   }
 
   listen() {
