@@ -16,6 +16,7 @@ exports.deleteUser = exports.updateUser = exports.getUser = exports.getUsers = e
 const httpException_1 = __importDefault(require("../helpers/httpException"));
 const client_1 = __importDefault(require("../db/client"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const generateToken_1 = require("../helpers/generateToken");
 const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const existingUser = yield client_1.default.user.findUnique({
@@ -34,7 +35,8 @@ const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
             password: hashedPassword
         };
         const user = yield client_1.default.user.create({ data: newUser });
-        res.json({ email: user.email, name: user.name, id: user.id });
+        const token = yield (0, generateToken_1.generateToken)(user.id);
+        res.json({ email: user.email, name: user.name, id: user.id, token });
     }
     catch (error) {
         next(new httpException_1.default(error.status, error.message));
@@ -59,7 +61,7 @@ const getUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
                 id: parseInt(req.params.uid),
             },
         });
-        console.log(findUserId);
+        // console.log(findUserId)
         if (!findUserId) {
             return res.status(404).json('Usuario no encontrado');
         }

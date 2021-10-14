@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import HttpException from "../helpers/httpException";
 import prisma from "../db/client";
 import bcrypt from 'bcryptjs';
+import { generateToken } from "../helpers/generateToken";
 
 
 
@@ -27,7 +28,10 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     
     const user = await prisma.user.create({ data: newUser });
 
-    res.json({email:user.email , name:user.name , id:user.id})
+    const token = await generateToken(user.id);
+
+
+    res.json({email:user.email , name:user.name , id:user.id , token})
 
   } catch (error: any) {
     next(new HttpException(error.status, error.message))
