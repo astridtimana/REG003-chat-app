@@ -1,6 +1,7 @@
 import express, { Application } from 'express';
 import cors from 'cors';
 import userRoutes from '../routes/user';
+import authRoutes from '../routes/auth'
 import errorMiddleware from '../middlewares/errorHandler';
 // import http from 'http';
 // import * as pkg from '../../package.json'
@@ -9,7 +10,8 @@ class Server {
   private app: Application;
   private port: String;
   private apiPaths = {
-    users: '/users'
+    users: '/users',
+    auth: '/auth'
   }
 
   constructor() {
@@ -33,6 +35,7 @@ class Server {
 
   routes() {
     this.app.use(this.apiPaths.users, userRoutes)
+    this.app.use(this.apiPaths.auth, authRoutes)
   }
 
   listen() {

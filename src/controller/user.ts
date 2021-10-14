@@ -30,7 +30,6 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 
     const token = await generateToken(user.id);
 
-
     res.json({email:user.email , name:user.name , id:user.id , token})
 
   } catch (error: any) {
