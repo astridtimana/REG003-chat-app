@@ -9,7 +9,6 @@ const user_1 = __importDefault(require("../routes/user"));
 const auth_1 = __importDefault(require("../routes/auth"));
 const chat_1 = __importDefault(require("../routes/chat"));
 const errorHandler_1 = __importDefault(require("../middlewares/errorHandler"));
-// import http from 'http';
 // import * as pkg from '../../package.json'
 class Server {
     constructor() {
@@ -21,7 +20,7 @@ class Server {
         this.app = (0, express_1.default)();
         this.port = process.env.PORT || '8080';
         // Http server
-        // this.server = http.createServer( this.app ); --- ES NECESARIO? 
+        // this.server = http.createServer( this.app ); -- es necesario?
         this.middlewares();
         this.routes();
         // this.app.set('pkg', pkg);

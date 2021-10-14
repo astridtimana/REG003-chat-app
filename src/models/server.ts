@@ -4,7 +4,7 @@ import userRoutes from '../routes/user';
 import authRoutes from '../routes/auth';
 import chatRoutes from '../routes/chat';
 import errorMiddleware from '../middlewares/errorHandler';
-// import http from 'http';
+import http from 'http';
 // import * as pkg from '../../package.json'
 
 class Server {
@@ -21,7 +21,7 @@ class Server {
     this.port = process.env.PORT || '8080';
 
     // Http server
-    // this.server = http.createServer( this.app ); --- ES NECESARIO? 
+    // this.server = http.createServer( this.app ); -- es necesario?
     
     this.middlewares();
     this.routes();
