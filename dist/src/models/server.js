@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const user_1 = __importDefault(require("../routes/user"));
 const auth_1 = __importDefault(require("../routes/auth"));
+const chat_1 = __importDefault(require("../routes/chat"));
 const errorHandler_1 = __importDefault(require("../middlewares/errorHandler"));
 // import http from 'http';
 // import * as pkg from '../../package.json'
@@ -14,7 +15,8 @@ class Server {
     constructor() {
         this.apiPaths = {
             users: '/users',
-            auth: '/auth'
+            auth: '/auth',
+            chat: '/chat'
         };
         this.app = (0, express_1.default)();
         this.port = process.env.PORT || '8080';
@@ -33,6 +35,7 @@ class Server {
     routes() {
         this.app.use(this.apiPaths.users, user_1.default);
         this.app.use(this.apiPaths.auth, auth_1.default);
+        this.app.use(this.apiPaths.chat, chat_1.default);
     }
     listen() {
         this.app.listen(this.port, () => {

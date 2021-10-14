@@ -4,7 +4,7 @@ import HttpException from "../helpers/httpException";
 import bcrypt from 'bcryptjs';
 import { generateToken } from "../helpers/generateToken";
 
-const login = async (req: Request, res: Response, next: NextFunction) =>{
+export const login = async (req: Request, res: Response, next: NextFunction) =>{
 
     const {email,password} =req.body;
     try {
@@ -30,5 +30,3 @@ const login = async (req: Request, res: Response, next: NextFunction) =>{
         next(new HttpException(error.status, error.message))
     }
 }
-
-export {login}
