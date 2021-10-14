@@ -4,7 +4,7 @@ export const generateToken = (uid: number) =>{
 
     return new Promise((resolve,reject)=>{
 
-        const payload={uid};
+        const payload={uid}; // agregar más info de ser necesario
         const secret =process.env.JWT_KEY
 
         if (secret) {
@@ -21,6 +21,5 @@ export const generateToken = (uid: number) =>{
         } else {
             throw new Error('No existe una firma para el token')
         }
-
     })
 }
