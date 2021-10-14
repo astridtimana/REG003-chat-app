@@ -25,24 +25,8 @@ const login = async (req: Request, res: Response, next: NextFunction) =>{
         const token = await generateToken(existingUser.id);
 
         res.json({email:existingUser.email , name:existingUser.name , id:existingUser.id , token})
-        
-    } catch (error:any) {
-        next(new HttpException(error.status, error.message))
-    }
-}
-
-const logout = async (req: Request, res: Response, next: NextFunction) =>{
-
-    const {email,password} =req.body;
-    try {
-        
-
-        
-
 
     } catch (error:any) {
         next(new HttpException(error.status, error.message))
     }
 }
-
-export {login,logout}
