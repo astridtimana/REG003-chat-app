@@ -23,8 +23,10 @@ export const login = async (req: Request, res: Response, next: NextFunction) =>{
         if(!validPassword) { return  res.status(400).json('Password no es correcta') }
 
         const token = await generateToken(existingUser.id);
-
-        res.json({email:existingUser.email , name:existingUser.name , id:existingUser.id , token})
+        
+        res.cookie("token", token);
+        return res.redirect('/')
+        // res.json({email:existingUser.email , name:existingUser.name , id:existingUser.id , token})
         
     } catch (error:any) {
         next(new HttpException(error.status, error.message))
