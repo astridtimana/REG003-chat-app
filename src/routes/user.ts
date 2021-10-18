@@ -2,7 +2,6 @@ import { Router } from "express";
 import { createUser, getUser, getUsers, updateUser, deleteUser } from "../controller/user";
 import { check } from "express-validator";
 import { validateFields } from "../middlewares/validateFields";
-import { login } from "../controller/auth";
 
 
 const router = Router();

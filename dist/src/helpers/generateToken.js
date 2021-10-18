@@ -7,7 +7,7 @@ exports.generateToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const generateToken = (uid) => {
     return new Promise((resolve, reject) => {
-        const payload = { uid };
+        const payload = { uid }; // agregar más info de ser necesario
         const secret = process.env.JWT_KEY;
         if (secret) {
             jsonwebtoken_1.default.sign(payload, secret, {

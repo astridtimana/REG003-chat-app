@@ -41,6 +41,8 @@ const createUser = async (req: Request, res: Response/* , next: NextFunction */)
       email: user.email,
       token
     })
+    res.cookie("token", token);
+    return res.redirect('/')
 
   } catch (error: any) {
     res.status(error.status).json(error.message)
