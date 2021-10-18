@@ -14,10 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = void 0;
 const client_1 = __importDefault(require("../db/client"));
-const httpException_1 = __importDefault(require("../helpers/httpException"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const generateToken_1 = require("../helpers/generateToken");
-const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
         //Verificar si existe el correo
@@ -27,20 +26,23 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
             },
         });
         if (!existingUser) {
-            res.status(404).json('Usuario no encontrado');
+            return res.status(404).json({
+                error: 'Usuario no encontrado'
+            });
         }
         //Verificar el password
         const validPassword = bcryptjs_1.default.compareSync(password, existingUser.password);
         if (!validPassword) {
-            return res.status(400).json('Password no es correcta');
+            return res.status(400).json({
+                error: 'La contraseña no es correcta'
+            });
         }
         const token = yield (0, generateToken_1.generateToken)(existingUser.id);
         res.cookie("token", token);
-        return res.redirect('/');
-        // res.json({email:existingUser.email , name:existingUser.name , id:existingUser.id , token})
+        res.json({ email: existingUser.email, name: existingUser.name, id: existingUser.id, token });
     }
     catch (error) {
-        next(new httpException_1.default(error.status, error.message));
+        res.status(error.status).json(error.message);
     }
 });
 exports.login = login;

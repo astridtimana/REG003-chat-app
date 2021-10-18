@@ -8,9 +8,9 @@ import cookieParser from 'cookie-parser';
 // import * as pkg from '../../package.json'
 
 class Server {
-  private app: Application;
-  private port: String;
-  private apiPaths = {
+  public app: Application;
+  public port: String;
+  public apiPaths = {
     users: '/users',
     auth: '/auth',
     chat: '/chat'
