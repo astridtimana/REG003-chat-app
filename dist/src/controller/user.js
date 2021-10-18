@@ -13,11 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.getUser = exports.getUsers = exports.createUser = void 0;
-// import HttpException from "../helpers/httpException";
 const client_1 = __importDefault(require("../db/client"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const generateToken_1 = require("../helpers/generateToken");
-const createUser = (req, res /* , next: NextFunction */) => __awaiter(void 0, void 0, void 0, function* () {
+const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const existingUser = yield client_1.default.user.findUnique({
             where: {
@@ -28,7 +27,6 @@ const createUser = (req, res /* , next: NextFunction */) => __awaiter(void 0, vo
             return res.status(400).json({
                 error: 'El usuario ya existe en la base de datos'
             });
-            /* next(new HttpException(400, 'Bad request')) */
         }
         const salt = bcryptjs_1.default.genSaltSync();
         const hashedPassword = bcryptjs_1.default.hashSync(req.body.password, salt);
@@ -39,6 +37,7 @@ const createUser = (req, res /* , next: NextFunction */) => __awaiter(void 0, vo
         };
         const user = yield client_1.default.user.create({ data: newUser });
         const token = yield (0, generateToken_1.generateToken)(user.id);
+        res.cookie("token", token);
         res.json({
             id: user.id,
             name: user.name,
@@ -48,11 +47,10 @@ const createUser = (req, res /* , next: NextFunction */) => __awaiter(void 0, vo
     }
     catch (error) {
         res.status(error.status).json(error.message);
-        /* next(new HttpException(error.status, error.message)) */
     }
 });
 exports.createUser = createUser;
-const getUsers = (req, res /* , next: NextFunction */) => __awaiter(void 0, void 0, void 0, function* () {
+const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const allUsers = yield client_1.default.user.findMany();
         res.json(allUsers);
@@ -60,19 +58,16 @@ const getUsers = (req, res /* , next: NextFunction */) => __awaiter(void 0, void
     }
     catch (error) {
         res.status(error.status).json(error.message);
-        /* next(new HttpException(error.status, error.message)) */
     }
 });
 exports.getUsers = getUsers;
-const getUser = (req, res /* , next: NextFunction */) => __awaiter(void 0, void 0, void 0, function* () {
+const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // By ID
         const findUserId = yield client_1.default.user.findUnique({
             where: {
                 id: parseInt(req.params.uid),
             },
         });
-        // console.log(findUserId)
         if (!findUserId) {
             return res.status(404).json({
                 error: 'Usuario no encontrado'
@@ -86,11 +81,10 @@ const getUser = (req, res /* , next: NextFunction */) => __awaiter(void 0, void 
     }
     catch (error) {
         res.status(error.status).json(error.message);
-        /* next(new HttpException(error.status, error.message)) */
     }
 });
 exports.getUser = getUser;
-const updateUser = (req, res /* , next: NextFunction */) => __awaiter(void 0, void 0, void 0, function* () {
+const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let { name, email, password } = req.body;
         const findUserToUpd = yield client_1.default.user.findUnique({
@@ -120,11 +114,10 @@ const updateUser = (req, res /* , next: NextFunction */) => __awaiter(void 0, vo
     }
     catch (error) {
         res.status(error.status).json(error.message);
-        /* next(new HttpException(error.status, error.message)) */
     }
 });
 exports.updateUser = updateUser;
-const deleteUser = (req, res /* , next: NextFunction */) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const deletedUser = yield client_1.default.user.delete({
             where: {
@@ -139,7 +132,6 @@ const deleteUser = (req, res /* , next: NextFunction */) => __awaiter(void 0, vo
     }
     catch (error) {
         res.status(error.status).json(error.message);
-        /* next(new HttpException(error.status, error.message)) */
     }
 });
 exports.deleteUser = deleteUser;

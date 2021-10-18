@@ -1,12 +1,10 @@
-import { Request, Response/* , NextFunction  */} from "express";
-// import HttpException from "../helpers/httpException";
+import { Request, Response } from "express";
 import prisma from "../db/client";
 import bcrypt from 'bcryptjs';
 import { generateToken } from "../helpers/generateToken";
 
 
-
-const createUser = async (req: Request, res: Response/* , next: NextFunction */) => {
+const createUser = async (req: Request, res: Response) => {
 
   try {
     const existingUser = await prisma.user.findUnique({
@@ -19,7 +17,6 @@ const createUser = async (req: Request, res: Response/* , next: NextFunction */)
       return res.status(400).json({
         error: 'El usuario ya existe en la base de datos'
       })
-      /* next(new HttpException(400, 'Bad request')) */ 
     }
 
     const salt = bcrypt.genSaltSync();
@@ -34,45 +31,42 @@ const createUser = async (req: Request, res: Response/* , next: NextFunction */)
     const user = await prisma.user.create({ data: newUser });
 
     const token = await generateToken(user.id);
-
+    
+    res.cookie("token", token);
     res.json({
       id: user.id,
       name: user.name,
       email: user.email,
       token
     })
-    res.cookie("token", token);
-    return res.redirect('/')
 
   } catch (error: any) {
     res.status(error.status).json(error.message)
-    /* next(new HttpException(error.status, error.message)) */
   }
 }
 
-const getUsers = async (req: Request, res: Response/* , next: NextFunction */) => {
-  try {
 
+
+const getUsers = async (req: Request, res: Response) => {
+  try {
     const allUsers = await prisma.user.findMany();
     res.json(allUsers)
     // Cómo podemos hacer para que aquí no se muestre la contraseña? Tal vez en el modelo idk
   } catch (error: any) {
     res.status(error.status).json(error.message)
-    /* next(new HttpException(error.status, error.message)) */
   }
 
 }
 
-const getUser = async (req: Request, res: Response/* , next: NextFunction */) => {
-  try {
 
-    // By ID
+
+const getUser = async (req: Request, res: Response) => {
+  try {
     const findUserId = await prisma.user.findUnique({
       where: {
         id: parseInt(req.params.uid),
       },
     })
-    // console.log(findUserId)
 
     if (!findUserId ) {
       return res.status(404).json({
@@ -88,11 +82,12 @@ const getUser = async (req: Request, res: Response/* , next: NextFunction */) =>
 
   } catch (error: any) {
     res.status(error.status).json(error.message)
-    /* next(new HttpException(error.status, error.message)) */
   }
 }
 
-const updateUser = async (req: Request, res: Response/* , next: NextFunction */) => {
+
+
+const updateUser = async (req: Request, res: Response) => {
   try {
 
     let { name, email, password } = req.body
@@ -127,11 +122,12 @@ const updateUser = async (req: Request, res: Response/* , next: NextFunction */)
     
   } catch (error: any) {
     res.status(error.status).json(error.message)
-    /* next(new HttpException(error.status, error.message)) */
   }
 }
 
-const deleteUser = async (req: Request, res: Response/* , next: NextFunction */) => {
+
+
+const deleteUser = async (req: Request, res: Response) => {
   try {
 
     const deletedUser = await prisma.user.delete({
@@ -146,7 +142,6 @@ const deleteUser = async (req: Request, res: Response/* , next: NextFunction */)
     })
   } catch (error: any) {
     res.status(error.status).json(error.message)
-    /* next(new HttpException(error.status, error.message)) */
   }
 }
 
