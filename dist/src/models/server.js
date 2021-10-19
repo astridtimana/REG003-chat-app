@@ -28,10 +28,10 @@ class Server {
     }
     middlewares() {
         this.app.use((0, cors_1.default)());
+        this.app.use((0, cookie_parser_1.default)());
         this.app.use(express_1.default.json());
         this.app.use(express_1.default.urlencoded({ extended: false }));
         this.app.use(errorHandler_1.default);
-        this.app.use((0, cookie_parser_1.default)());
     }
     routes() {
         this.app.use(this.apiPaths.users, user_1.default);

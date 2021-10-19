@@ -4,18 +4,18 @@ import jwt from 'jsonwebtoken';
 export const validateToken = (req: Request, res: Response, next: NextFunction) => {
 
     try {
-
     // const token = req.header('bearer')
-    const { authorization } = req.headers;
+    // const { authorization } = req.headers;
+    const token = req.cookies.token;
 
-    if (!authorization) {
-      return res.status(401).json({
-        msg: 'No hay autorización'
-      });
-    }
+    // if (!authorization) {
+    //   return res.status(401).json({
+    //     msg: 'No hay autorización'
+    //   });
+    // }
 
     // ponemos la coma porque no necesitamos el argumento type (que es 1°)
-    const [, token] = authorization.split(' ');
+    // const [, token] = authorization.split(' ');
 
 
     if (!token) {
@@ -39,8 +39,9 @@ export const validateToken = (req: Request, res: Response, next: NextFunction) =
     next()
 
   } catch (err) {
-    return res.status(401).json({
-      msg: 'Token no es válido'
-    })
+    return res.clearCookie("token");
+    // return res.status(401).json({
+    //   msg: 'Token no es válido'
+    // })
   }
 }

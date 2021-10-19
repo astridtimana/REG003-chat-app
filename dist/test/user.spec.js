@@ -39,11 +39,6 @@ const userInDB = {
     email: 'rich@prisma.io',
     password: '$2a$10$Rcm3RaGTJrcNaN713OOWZexaSRN621PnNlmKZLrDW95QuW2h0Jugq'
 };
-const updatedUserRes = {
-    id: 1,
-    name: 'Richie',
-    email: 'rich@prisma.io'
-};
 const updatedUserInDB = {
     id: 1,
     name: 'Richie',
@@ -101,82 +96,77 @@ describe('GET/:uid', () => {
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalled();
     }));
-    it('should get 400 when bad request', () => __awaiter(void 0, void 0, void 0, function* () {
-        const req = {
-            params: {}
-        };
+    /*   it('should get 400 when bad request', async () => {
+        const req:any = { }
         const res = mockResponse();
-        singleton_1.prismaMock.user.findUnique.mockRejectedValue('Bad request');
-        yield (0, user_1.getUser)(req, res);
+        prismaMock.user.findUnique.mockRejectedValue({error: 'Bad request'});
+        await getUser(req, res);
         expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalled();
+      }); */
+    it('should get 500 when user not found', () => __awaiter(void 0, void 0, void 0, function* () {
+        const req = { params: { uid: 13 } };
+        const res = mockResponse();
+        singleton_1.prismaMock.user.findUnique.mockRejectedValue({ error: 'User not found' });
+        yield (0, user_1.getUser)(req, res);
+        expect(res.status).toHaveBeenCalledWith(404);
         expect(res.json).toHaveBeenCalled();
     }));
 });
 /************ PUT ************/
 describe('PUT', () => {
-    it('should update user at DB', () => __awaiter(void 0, void 0, void 0, function* () {
-        const req2 = {
-            params: {
-                uid: 1
-            },
+    it('should update user - only email and name', () => __awaiter(void 0, void 0, void 0, function* () {
+        const req = {
+            params: { uid: 1 },
             body: {
                 name: 'Richie',
+                email: 'rich@prisma.io',
+                password: 'rich123'
             }
         };
-        const req3 = {};
         const res = mockResponse();
-        singleton_1.prismaMock.user.create.mockResolvedValue(userInDB);
-        yield (0, user_1.createUser)(req, res);
         singleton_1.prismaMock.user.update.mockResolvedValue(updatedUserInDB);
-        yield (0, user_1.updateUser)(req2, res);
+        yield (0, user_1.updateUser)(req, res);
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalled();
     }));
-    it('should return status 500', () => __awaiter(void 0, void 0, void 0, function* () {
-        const req3 = {};
+    /* it('should update password too', async ()=>{
+      const res = mockResponse();
+  
+      prismaMock.user.create.mockResolvedValue(userInDB);
+      await createUser(req, res);
+      
+      const req3:any = {
+        params: { uid: 1 },
+        body: {
+          name: 'Hola',
+          email: 'holasoyrich@prisma.io',
+          password: '123rich'
+        }
+      }
+      prismaMock.user.update.mockResolvedValue(updatedUserInDB);
+      await updateUser(req3, res)
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalled();
+    }) */
+    it('should get 400 when no body (no crime)', () => __awaiter(void 0, void 0, void 0, function* () {
+        const req = { params: {}, body: {} };
         const res = mockResponse();
-        singleton_1.prismaMock.user.create.mockResolvedValue(userInDB);
-        yield (0, user_1.createUser)(req, res);
-        singleton_1.prismaMock.user.update.mockResolvedValue(updatedUserInDB);
-        yield (0, user_1.updateUser)(req3, res);
-        expect(res.status).toHaveBeenCalledWith(500);
+        singleton_1.prismaMock.user.update.mockRejectedValue('Bad request');
+        yield (0, user_1.updateUser)(req, res);
+        expect(res.status).toHaveBeenCalledWith(400);
         expect(res.json).toHaveBeenCalled();
     }));
-    it('should return status 200', () => __awaiter(void 0, void 0, void 0, function* () {
-        const req4 = {
-            params: {
-                uid: 1
-            },
-            body: {
-                name: 'Richie',
-                password: 'hola2'
-            }
-        };
+    it('should get 404 when user not found', () => __awaiter(void 0, void 0, void 0, function* () {
+        const req = { params: { uid: 15 }, body: {
+                name: 'Pepito',
+                email: 'pepito@prisma.io'
+            } };
         const res = mockResponse();
-        singleton_1.prismaMock.user.create.mockResolvedValue(userInDB);
-        yield (0, user_1.createUser)(req, res);
-        singleton_1.prismaMock.user.update.mockResolvedValue(updatedUserInDB);
-        yield (0, user_1.updateUser)(req4, res);
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalled();
-    }));
-    it('should return status 404', () => __awaiter(void 0, void 0, void 0, function* () {
-        const req4 = {
-            params: {
-                uid: 2
-            },
-            body: {
-                name: 'Richie',
-            }
-        };
-        const res = mockResponse();
-        singleton_1.prismaMock.user.create.mockResolvedValue(userInDB);
-        yield (0, user_1.createUser)(req, res);
-        singleton_1.prismaMock.user.update.mockResolvedValue(updatedUserInDB);
-        yield (0, user_1.updateUser)(req4, res);
+        singleton_1.prismaMock.user.update.mockRejectedValue({ code: 'P2025' });
+        yield (0, user_1.updateUser)(req, res);
         expect(res.status).toHaveBeenCalledWith(404);
         expect(res.json).toHaveBeenCalled();
-        // console.log(res.json.mock.calls)
     }));
 });
 /************ DELETE ************/

@@ -31,7 +31,8 @@ export const login = async (req: Request, res: Response) =>{
 
     const token = await generateToken(existingUser.id);
     
-    res.cookie("token", token);
+    res.cookie("token", token,{ expires: new Date( Date.now() + 1800000) });
+
     res.json({email:existingUser.email , name:existingUser.name , id:existingUser.id , token})
       
   } catch (error:any) {

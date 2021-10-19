@@ -30,10 +30,10 @@ class Server {
 
   middlewares() {
     this.app.use(cors()); 
+    this.app.use(cookieParser());
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(errorMiddleware);
-    this.app.use(cookieParser())
   }
 
   routes() {

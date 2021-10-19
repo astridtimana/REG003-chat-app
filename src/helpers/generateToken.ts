@@ -9,7 +9,7 @@ export const generateToken = (uid: number) =>{
 
         if (secret) {
             jwt.sign(payload, secret, {
-                expiresIn:'24h'
+                expiresIn:'1h'
             },(err, token)=>{
                 if(err){
                     console.log(err)

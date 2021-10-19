@@ -77,7 +77,6 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (error) {
-        console.log(error);
         return res.status(404).json({
             error: 'User not found'
         });
@@ -110,7 +109,6 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
     catch (error) {
-        console.log(error);
         if (error.code === 'P2025') {
             return res.status(404).json({
                 error: 'User not found'

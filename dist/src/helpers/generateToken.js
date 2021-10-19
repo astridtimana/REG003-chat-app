@@ -11,7 +11,7 @@ const generateToken = (uid) => {
         const secret = process.env.JWT_KEY;
         if (secret) {
             jsonwebtoken_1.default.sign(payload, secret, {
-                expiresIn: '24h'
+                expiresIn: '1h'
             }, (err, token) => {
                 if (err) {
                     console.log(err);
