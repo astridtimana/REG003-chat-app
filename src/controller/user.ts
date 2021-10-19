@@ -33,7 +33,7 @@ const createUser = async (req: Request, res: Response) => {
     const token = await generateToken(user.id);
     
     res.cookie("token", token);
-    res.json({
+    res.status(200).json({
       id: user.id,
       name: user.name,
       email: user.email,
@@ -41,7 +41,7 @@ const createUser = async (req: Request, res: Response) => {
     })
 
   } catch (error: any) {
-    res.status(error.status).json(error.message)
+    res.status(500).json('Internal server error');
   }
 }
 
@@ -50,38 +50,39 @@ const createUser = async (req: Request, res: Response) => {
 const getUsers = async (req: Request, res: Response) => {
   try {
     const allUsers = await prisma.user.findMany();
-    res.json(allUsers)
+    res.status(200).json(allUsers)
     // Cómo podemos hacer para que aquí no se muestre la contraseña? Tal vez en el modelo idk
   } catch (error: any) {
-    res.status(error.status).json(error.message)
+    // No sabemos qué error podemos darle para testearlo
+    res.status(500).json('Internal server error');
   }
-
 }
 
 
 
 const getUser = async (req: Request, res: Response) => {
   try {
-    const findUserId = await prisma.user.findUnique({
+    const findUserId:any = await prisma.user.findUnique({
       where: {
         id: parseInt(req.params.uid),
       },
     })
 
-    if (!findUserId ) {
+    /* if (!findUserId ) {
+      console.log('holis')
       return res.status(404).json({
         error: 'Usuario no encontrado'
       })
-    }
+    } */
 
-    res.json({
+    res.status(200).json({
       id: findUserId.id,
       name: findUserId.name,
       email: findUserId.email,
     })
 
   } catch (error: any) {
-    res.status(error.status).json(error.message)
+    res.status(400).json('Bad request');
   }
 }
 
@@ -114,14 +115,14 @@ const updateUser = async (req: Request, res: Response) => {
       data: { email, name, password }
     });
 
-    return res.json({
+    return res.status(200).json({
       id: updatedUser.id,
       name: updatedUser.name,
       email: updatedUser.email
     })
     
   } catch (error: any) {
-    res.status(error.status).json(error.message)
+    res.status(500).json('Internal server error');
   }
 }
 
@@ -135,13 +136,13 @@ const deleteUser = async (req: Request, res: Response) => {
         id: Number(req.params.uid),
       },
     })
-    return res.json({
+    return res.status(200).json({
       id: deletedUser.id,
       name: deletedUser.name,
       email: deletedUser.email
     })
   } catch (error: any) {
-    res.status(error.status).json(error.message)
+    res.status(400).json('Bad request');
   }
 }
 
