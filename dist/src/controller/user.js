@@ -25,7 +25,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
         if (existingUser) {
             return res.status(400).json({
-                error: 'El usuario ya existe en la base de datos'
+                error: 'Email already exists'
             });
         }
         const salt = bcryptjs_1.default.genSaltSync();
@@ -64,47 +64,42 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getUsers = getUsers;
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const { uid } = req.params;
         const findUserId = yield client_1.default.user.findUnique({
             where: {
-                id: parseInt(req.params.uid),
-            },
+                id: Number(uid)
+            }
         });
-        /* if (!findUserId ) {
-          console.log('holis')
-          return res.status(404).json({
-            error: 'Usuario no encontrado'
-          })
-        } */
-        res.status(200).json({
+        return res.status(200).json({
             id: findUserId.id,
             name: findUserId.name,
             email: findUserId.email,
         });
     }
     catch (error) {
-        res.status(400).json('Bad request');
+        console.log(error);
+        return res.status(404).json({
+            error: 'User not found'
+        });
     }
 });
 exports.getUser = getUser;
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { name, email, password } = req.body;
+    const { uid } = req.params;
     try {
-        let { name, email, password } = req.body;
-        const findUserToUpd = yield client_1.default.user.findUnique({
-            where: {
-                id: Number(req.params.uid),
-            }
-        });
-        if (!findUserToUpd)
-            return res.status(404).json({
-                error: 'Usuario no encontrado'
+        if (!uid || (!name && !email && !password)) {
+            return res.status(400).json({
+                error: 'Bad request'
             });
+        }
         if (password) {
             const salt = bcryptjs_1.default.genSaltSync();
             password = bcryptjs_1.default.hashSync(password, salt);
         }
         const updatedUser = yield client_1.default.user.update({
             where: {
-                id: Number(req.params.uid),
+                id: Number(uid),
             },
             data: { email, name, password }
         });
@@ -115,7 +110,17 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
     catch (error) {
-        res.status(500).json('Internal server error');
+        console.log(error);
+        if (error.code === 'P2025') {
+            return res.status(404).json({
+                error: 'User not found'
+            });
+        }
+        else {
+            return res.status(500).json({
+                error: 'Internal server error'
+            });
+        }
     }
 });
 exports.updateUser = updateUser;

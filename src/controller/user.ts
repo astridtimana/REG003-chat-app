@@ -15,7 +15,7 @@ const createUser = async (req: Request, res: Response) => {
 
     if (existingUser) {
       return res.status(400).json({
-        error: 'El usuario ya existe en la base de datos'
+        error: 'Email already exists'
       })
     }
 
@@ -61,56 +61,53 @@ const getUsers = async (req: Request, res: Response) => {
 
 
 const getUser = async (req: Request, res: Response) => {
+  
   try {
+    const { uid } = req.params;
+  
     const findUserId:any = await prisma.user.findUnique({
       where: {
-        id: parseInt(req.params.uid),
-      },
+        id: Number(uid)
+      }
     })
-
-    /* if (!findUserId ) {
-      console.log('holis')
-      return res.status(404).json({
-        error: 'Usuario no encontrado'
-      })
-    } */
-
-    res.status(200).json({
+    
+    return res.status(200).json({
       id: findUserId.id,
       name: findUserId.name,
       email: findUserId.email,
     })
 
   } catch (error: any) {
-    res.status(400).json('Bad request');
+    return res.status(404).json({
+      error: 'User not found'
+    });
+    
   }
 }
 
 
 
 const updateUser = async (req: Request, res: Response) => {
+  
+  let { name, email, password } = req.body
+  const { uid } = req.params
+  
   try {
-
-    let { name, email, password } = req.body
-
-    const findUserToUpd = await prisma.user.findUnique({
-      where: {
-        id: Number(req.params.uid),
-      }
-    })
-
-    if (!findUserToUpd) return res.status(404).json({
-      error: 'Usuario no encontrado'
-    })
-
+    
+    if (!uid || (!name && !email && !password)) {
+      return res.status(400).json({
+        error: 'Bad request'
+      })
+    }
+    
     if (password) {
       const salt = bcrypt.genSaltSync();
       password = bcrypt.hashSync(password , salt);
     } 
-
+    
     const updatedUser = await prisma.user.update({
       where: {
-        id: Number(req.params.uid),
+        id: Number(uid),
       },
       data: { email, name, password }
     });
@@ -122,7 +119,16 @@ const updateUser = async (req: Request, res: Response) => {
     })
     
   } catch (error: any) {
-    res.status(500).json('Internal server error');
+
+    if (error.code === 'P2025') {
+      return res.status(404).json({
+        error: 'User not found'
+      })
+    } else {
+      return res.status(500).json({
+        error: 'Internal server error'
+      });
+    }
   }
 }
 
