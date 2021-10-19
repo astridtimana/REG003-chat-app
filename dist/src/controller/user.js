@@ -38,7 +38,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const user = yield client_1.default.user.create({ data: newUser });
         const token = yield (0, generateToken_1.generateToken)(user.id);
         res.cookie("token", token);
-        res.json({
+        res.status(200).json({
             id: user.id,
             name: user.name,
             email: user.email,
@@ -46,18 +46,19 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
     catch (error) {
-        res.status(error.status).json(error.message);
+        res.status(500).json('Internal server error');
     }
 });
 exports.createUser = createUser;
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const allUsers = yield client_1.default.user.findMany();
-        res.json(allUsers);
+        res.status(200).json(allUsers);
         // Cómo podemos hacer para que aquí no se muestre la contraseña? Tal vez en el modelo idk
     }
     catch (error) {
-        res.status(error.status).json(error.message);
+        // No sabemos qué error podemos darle para testearlo
+        res.status(500).json('Internal server error');
     }
 });
 exports.getUsers = getUsers;
@@ -68,19 +69,20 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 id: parseInt(req.params.uid),
             },
         });
-        if (!findUserId) {
-            return res.status(404).json({
-                error: 'Usuario no encontrado'
-            });
-        }
-        res.json({
+        /* if (!findUserId ) {
+          console.log('holis')
+          return res.status(404).json({
+            error: 'Usuario no encontrado'
+          })
+        } */
+        res.status(200).json({
             id: findUserId.id,
             name: findUserId.name,
             email: findUserId.email,
         });
     }
     catch (error) {
-        res.status(error.status).json(error.message);
+        res.status(400).json('Bad request');
     }
 });
 exports.getUser = getUser;
@@ -106,14 +108,14 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             },
             data: { email, name, password }
         });
-        return res.json({
+        return res.status(200).json({
             id: updatedUser.id,
             name: updatedUser.name,
             email: updatedUser.email
         });
     }
     catch (error) {
-        res.status(error.status).json(error.message);
+        res.status(500).json('Internal server error');
     }
 });
 exports.updateUser = updateUser;
@@ -124,14 +126,14 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 id: Number(req.params.uid),
             },
         });
-        return res.json({
+        return res.status(200).json({
             id: deletedUser.id,
             name: deletedUser.name,
             email: deletedUser.email
         });
     }
     catch (error) {
-        res.status(error.status).json(error.message);
+        res.status(400).json('Bad request');
     }
 });
 exports.deleteUser = deleteUser;
