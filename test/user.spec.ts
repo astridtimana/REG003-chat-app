@@ -179,7 +179,7 @@ describe('PUT', () => {
 
   }); 
 
-  it('should return status 200', async () => { 
+  it('should return status 404', async () => { 
     const req4:any={
       params:{
         uid:2

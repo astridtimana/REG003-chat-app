@@ -160,7 +160,7 @@ describe('PUT', () => {
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalled();
     }));
-    it('should return status 200', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('should return status 404', () => __awaiter(void 0, void 0, void 0, function* () {
         const req4 = {
             params: {
                 uid: 2
