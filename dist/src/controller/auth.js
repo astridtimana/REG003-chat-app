@@ -27,21 +27,22 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         if (!existingUser) {
             return res.status(404).json({
-                error: 'Usuario no encontrado'
+                error: 'User not found'
             });
         }
         //Verificar el password
         const validPassword = bcryptjs_1.default.compareSync(password, existingUser.password);
         if (!validPassword) {
             return res.status(400).json({
-                error: 'La contraseña no es correcta'
+                error: 'Wrong password'
             });
         }
         const token = yield (0, generateToken_1.generateToken)(existingUser.id);
         res.cookie("token", token, { expires: new Date(Date.now() + 1800000) });
-        res.json({ email: existingUser.email, name: existingUser.name, id: existingUser.id, token });
+        res.status(200).json({ email: existingUser.email, name: existingUser.name, id: existingUser.id, token });
     }
     catch (error) {
+        console.log(error);
         res.status(error.status).json(error.message);
     }
 });

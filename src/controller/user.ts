@@ -150,7 +150,7 @@ const deleteUser = async (req: Request, res: Response) => {
       email: deletedUser.email
     })
   } catch (error: any) {
-    res.status(400).json('Bad request');
+    res.status(400).json({error: 'Bad request'});
   }
 }
 

@@ -116,7 +116,7 @@ describe('GET/:uid', () => {
     expect(res.json).toHaveBeenCalled();
   }); */
 
-  it('should get 500 when user not found', async () => {
+  it('should get 404 when user not found', async () => {
     const req:any = { params: { uid: 13} } 
     const res = mockResponse(); 
     prismaMock.user.findUnique.mockRejectedValue({error: 'User not found'});
@@ -171,7 +171,7 @@ describe('PUT', () => {
     const req:any = { params: { }, body: { } }
     const res = mockResponse();
     
-    prismaMock.user.update.mockRejectedValue('Bad request');
+    prismaMock.user.update.mockRejectedValue({error: 'Bad request'});
     await updateUser(req, res)
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalled();
@@ -214,7 +214,7 @@ describe('DELETE', () => {
     }
     const res = mockResponse(); 
     
-    prismaMock.user.delete.mockRejectedValue('Bad request')
+    prismaMock.user.delete.mockRejectedValue({error: 'Bad request'})
     await deleteUser(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalled();
