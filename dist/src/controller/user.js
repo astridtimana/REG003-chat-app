@@ -41,8 +41,8 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(200).json({
             id: user.id,
             name: user.name,
-            email: user.email,
-            token
+            email: user.email /* ,
+            token */
         });
     }
     catch (error) {
