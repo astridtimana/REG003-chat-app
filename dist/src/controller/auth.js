@@ -35,7 +35,9 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
             return res.status(400).json('Password no es correcta');
         }
         const token = yield (0, generateToken_1.generateToken)(existingUser.id);
-        res.json({ email: existingUser.email, name: existingUser.name, id: existingUser.id, token });
+        res.cookie("token", token);
+        return res.redirect('/');
+        // res.json({email:existingUser.email , name:existingUser.name , id:existingUser.id , token})
     }
     catch (error) {
         next(new httpException_1.default(error.status, error.message));

@@ -36,7 +36,9 @@ const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         };
         const user = yield client_1.default.user.create({ data: newUser });
         const token = yield (0, generateToken_1.generateToken)(user.id);
-        res.json({ email: user.email, name: user.name, id: user.id, token });
+        res.cookie("token", token);
+        return res.redirect('/');
+        // res.json({email:user.email , name:user.name , id:user.id , token})
     }
     catch (error) {
         next(new httpException_1.default(error.status, error.message));
