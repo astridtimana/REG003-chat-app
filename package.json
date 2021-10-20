@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/src/app.js",
   "scripts": {
-    "start": "node dist/src/app.js",
+    "start": "nodemon dist/src/app.js",
     "test": "jest --verbose --coverage",
     "db-up": "docker-compose up -d",
     "db-status": "docker-compose ps",
@@ -21,6 +21,7 @@
     "express-validator": "^6.12.2",
     "heroku": "^7.59.0",
     "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.1.2",
     "socket.io": "^4.1.2",
     "ts-jest": "^27.0.5",
     "ts-node": "^10.3.0"

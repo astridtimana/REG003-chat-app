@@ -8,6 +8,7 @@ const cors_1 = __importDefault(require("cors"));
 const user_1 = __importDefault(require("../routes/user"));
 const auth_1 = __importDefault(require("../routes/auth"));
 const chat_1 = __importDefault(require("../routes/chat"));
+const currentUser_1 = __importDefault(require("../routes/currentUser"));
 const errorHandler_1 = __importDefault(require("../middlewares/errorHandler"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 // import * as pkg from '../../package.json'
@@ -16,7 +17,8 @@ class Server {
         this.apiPaths = {
             users: '/users',
             auth: '/auth',
-            chat: '/chat'
+            chat: '/chat',
+            currentUser: '/currentUser'
         };
         this.app = (0, express_1.default)();
         this.port = process.env.PORT || '8080';
@@ -27,16 +29,21 @@ class Server {
         // this.app.set('pkg', pkg);
     }
     middlewares() {
-        this.app.use((0, cors_1.default)());
+        this.app.use((0, cors_1.default)({
+            origin: "http://localhost:3000",
+            credentials: true,
+            preflightContinue: true,
+        }));
+        this.app.use((0, cookie_parser_1.default)());
         this.app.use(express_1.default.json());
         this.app.use(express_1.default.urlencoded({ extended: false }));
         this.app.use(errorHandler_1.default);
-        this.app.use((0, cookie_parser_1.default)());
     }
     routes() {
         this.app.use(this.apiPaths.users, user_1.default);
         this.app.use(this.apiPaths.auth, auth_1.default);
         this.app.use(this.apiPaths.chat, chat_1.default);
+        this.app.use(this.apiPaths.currentUser, currentUser_1.default);
     }
     listen() {
         this.app.listen(this.port, () => {

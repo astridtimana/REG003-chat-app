@@ -14,33 +14,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = void 0;
 const client_1 = __importDefault(require("../db/client"));
-const httpException_1 = __importDefault(require("../helpers/httpException"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const generateToken_1 = require("../helpers/generateToken");
-const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
+        if (!email && !password) {
+            return res.status(400).json({
+                error: 'Bad request'
+            });
+        }
         //Verificar si existe el correo
         const existingUser = yield client_1.default.user.findUnique({
             where: {
                 email: email
             },
         });
-        if (!existingUser) {
-            res.status(404).json('Usuario no encontrado');
-        }
         //Verificar el password
         const validPassword = bcryptjs_1.default.compareSync(password, existingUser.password);
         if (!validPassword) {
-            return res.status(400).json('Password no es correcta');
+            return res.status(400).json({
+                error: 'Wrong password'
+            });
         }
         const token = yield (0, generateToken_1.generateToken)(existingUser.id);
-        res.cookie("token", token);
-        return res.redirect('/');
-        // res.json({email:existingUser.email , name:existingUser.name , id:existingUser.id , token})
+        res.cookie("token", token, { expires: new Date(Date.now() + 1800000) });
+        res.status(200).json({ email: existingUser.email, name: existingUser.name, id: existingUser.id, token });
     }
     catch (error) {
-        next(new httpException_1.default(error.status, error.message));
+        return res.status(404).json({ error: 'User not found' });
     }
 });
 exports.login = login;

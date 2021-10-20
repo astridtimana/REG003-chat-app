@@ -1,14 +1,12 @@
 import { Router } from "express";
+import { getCurrentUser } from "../controller/getCurrentUser";
 import { validateToken } from "../middlewares/auth";
+
 
 const router = Router();
 
-router.post('/', validateToken, (req, res, next) => {
-  
-  res.json({
-    msg: 'ok'
-  })
-})
+router.get('/', validateToken, getCurrentUser)
 
 export default router;
+
 

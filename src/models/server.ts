@@ -3,17 +3,19 @@ import cors from 'cors';
 import userRoutes from '../routes/user';
 import authRoutes from '../routes/auth';
 import chatRoutes from '../routes/chat';
+import currentUserRoutes from '../routes/currentUser'
 import errorMiddleware from '../middlewares/errorHandler';
 import cookieParser from 'cookie-parser';
 // import * as pkg from '../../package.json'
 
 class Server {
-  private app: Application;
-  private port: String;
-  private apiPaths = {
+  public app: Application;
+  public port: String;
+  public apiPaths = {
     users: '/users',
     auth: '/auth',
-    chat: '/chat'
+    chat: '/chat',
+    currentUser:'/currentUser'
   }
 
   constructor() {
@@ -29,17 +31,22 @@ class Server {
   }
 
   middlewares() {
-    this.app.use(cors()); 
+    this.app.use(cors({
+      origin:"http://localhost:3000",
+      credentials:true,
+      preflightContinue:true,
+    })); 
+    this.app.use(cookieParser());
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(errorMiddleware);
-    this.app.use(cookieParser())
   }
 
   routes() {
     this.app.use(this.apiPaths.users, userRoutes)
     this.app.use(this.apiPaths.auth, authRoutes)
     this.app.use(this.apiPaths.chat, chatRoutes)
+    this.app.use(this.apiPaths.currentUser, currentUserRoutes)
   }
 
   listen() {

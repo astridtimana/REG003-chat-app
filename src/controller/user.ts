@@ -1,12 +1,10 @@
-import { Request, Response, NextFunction } from "express";
-import HttpException from "../helpers/httpException";
+import { Request, Response } from "express";
 import prisma from "../db/client";
 import bcrypt from 'bcryptjs';
 import { generateToken } from "../helpers/generateToken";
 
 
-
-const createUser = async (req: Request, res: Response, next: NextFunction) => {
+const createUser = async (req: Request, res: Response) => {
 
   try {
     const existingUser = await prisma.user.findUnique({
@@ -15,7 +13,11 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
       },
     })
 
-    if (existingUser) { return next(new HttpException(400, 'Bad request')) }
+    if (existingUser) {
+      return res.status(400).json({
+        error: 'Email already exists'
+      })
+    }
 
     const salt = bcrypt.genSaltSync();
     const hashedPassword = bcrypt.hashSync(req.body.password , salt);
@@ -29,90 +31,126 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     const user = await prisma.user.create({ data: newUser });
 
     const token = await generateToken(user.id);
-
-
-    res.cookie("token", token);
-    return res.redirect('/')
-    // res.json({email:user.email , name:user.name , id:user.id , token})
-
-  } catch (error: any) {
-    next(new HttpException(error.status, error.message))
-  }
-}
-
-const getUsers = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-
-    const allUsers = await prisma.user.findMany();
-    res.json(allUsers)
-
-  } catch (error: any) {
-    next(new HttpException(error.status, error.message))
-  }
-
-}
-
-const getUser = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-
-    // By ID
-    const findUserId = await prisma.user.findUnique({
-      where: {
-        id: parseInt(req.params.uid),
-      },
-    })
-    // console.log(findUserId)
-
-    if (!findUserId ) {
-       return res.status(404).json('Usuario no encontrado')
-     }
     
-    // deberíamos hacer un findUser by email?
-    // else /* if (!findUserId) */{
-    //   // By unique identifier
-    //   const findUserEmail = await prisma.user.findUnique({
-    //     where: {
-    //       email: req.params.uid,
-    //     },
-    //   })
+    res.cookie("token", token);
+    res.status(200).json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      token
+    })
 
-    //   res.json(findUserEmail)
-    // }
-    res.json(findUserId)
   } catch (error: any) {
-    next(new HttpException(error.status, error.message))
+    res.status(500).json('Internal server error');
   }
 }
 
-const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+
+
+const getUsers = async (req: Request, res: Response) => {
   try {
+    const allUsers = await prisma.user.findMany();
+    res.status(200).json(allUsers)
+    // Cómo podemos hacer para que aquí no se muestre la contraseña? Tal vez en el modelo idk
+  } catch (error: any) {
+    // No sabemos qué error podemos darle para testearlo
+    res.status(500).json('Internal server error');
+  }
+}
+
+
+
+const getUser = async (req: Request, res: Response) => {
+  
+  try {
+    const { uid } = req.params;
+  
+    const findUserId:any = await prisma.user.findUnique({
+      where: {
+        id: Number(uid)
+      }
+    })
+    
+    
+    return res.status(200).json({
+      id: findUserId.id,
+      name: findUserId.name,
+      email: findUserId.email,
+    })
+
+    
+  } catch (error: any) {
+    return res.status(404).json({
+      error: 'User not found'
+    });
+    
+  }
+}
+
+
+
+const updateUser = async (req: Request, res: Response) => {
+  
+  let { name, email, password } = req.body
+  const { uid } = req.params
+  
+  try {
+    
+    if (!uid || (!name && !email && !password)) {
+      return res.status(400).json({
+        error: 'Bad request'
+      })
+    }
+    
+    if (password) {
+      const salt = bcrypt.genSaltSync();
+      password = bcrypt.hashSync(password , salt);
+    } 
+    
     const updatedUser = await prisma.user.update({
       where: {
-        id: Number(req.params.uid),
+        id: Number(uid),
       },
-      data: {
-        email: req.body.email,
-        name: req.body.name,
-        password: req.body.password
-      },
+      data: { email, name, password }
+    });
+
+    return res.status(200).json({
+      id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email
     })
-    res.json(updatedUser)
+    
   } catch (error: any) {
-    next(new HttpException(error.status, error.message))
+
+    if (error.code === 'P2025') {
+      return res.status(404).json({
+        error: 'User not found'
+      })
+    } else {
+      return res.status(500).json({
+        error: 'Internal server error'
+      });
+    }
   }
 }
 
-const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+
+
+const deleteUser = async (req: Request, res: Response) => {
   try {
 
-    const deleteUser = await prisma.user.delete({
+    const deletedUser = await prisma.user.delete({
       where: {
         id: Number(req.params.uid),
       },
     })
-    res.json(deleteUser)
+    return res.status(200).json({
+      id: deletedUser.id,
+      name: deletedUser.name,
+      email: deletedUser.email
+    })
   } catch (error: any) {
-    next(new HttpException(error.status, error.message))
+    res.status(400).json({error: 'Bad request'});
   }
 }
 
