@@ -1,21 +1,19 @@
 import { Request, Response } from "express";
 import prisma from "../db/client";
-import jwtDecode from 'jwt-decode';
 
 
 export const getCurrentUser = async (req: Request, res: Response) => {
   
     try {
-        // const token = req.cookies.token;
-        // const decodeToken:any = jwtDecode(token);
 
-        const uid = req.uid
-    
-        const findUserId:any = await prisma.user.findUnique({
-            where: {
-            id: Number(uid)
-            }
-        })
+      // ESto ya viene en el req por el middleware auth.ts
+      const uid = req.uid
+  
+      const findUserId:any = await prisma.user.findUnique({
+          where: {
+          id: Number(uid)
+          }
+      })
       
       return res.status(200).json({
         id: findUserId.id,

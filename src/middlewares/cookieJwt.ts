@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+/* import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
 exports.cookieJwtAuth = (req:Request, res:Response, next:NextFunction) => {
@@ -18,4 +18,4 @@ exports.cookieJwtAuth = (req:Request, res:Response, next:NextFunction) => {
     res.clearCookie("token");
     return res.redirect("/");
   }
-};
+}; */
