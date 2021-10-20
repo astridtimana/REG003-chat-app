@@ -11,7 +11,7 @@ router.post('/', [
     check("name", "Ingrese un nombre").not().isEmpty(),
     check("password", "Ingrese una contraseña").not().isEmpty(),
     validateFields
-] ,createUser)
+], createUser)
 
 router.get('/', getUsers)
 

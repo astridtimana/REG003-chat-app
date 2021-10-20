@@ -3,7 +3,6 @@ import cors from 'cors';
 import userRoutes from '../routes/user';
 import authRoutes from '../routes/auth';
 import chatRoutes from '../routes/chat';
-import currentUserRoutes from '../routes/currentUser'
 import errorMiddleware from '../middlewares/errorHandler';
 import cookieParser from 'cookie-parser';
 // import * as pkg from '../../package.json'
@@ -15,15 +14,11 @@ class Server {
     users: '/users',
     auth: '/auth',
     chat: '/chat',
-    currentUser:'/currentUser'
   }
 
   constructor() {
     this.app = express();
     this.port = process.env.PORT || '8080';
-
-    // Http server
-    // this.server = http.createServer( this.app ); -- es necesario?
     
     this.middlewares();
     this.routes();
@@ -31,11 +26,11 @@ class Server {
   }
 
   middlewares() {
-    this.app.use(cors({
-      origin:"http://localhost:3000",
+    this.app.use(cors( { // dejamos todo este objeto por axios que lo necesita
+      origin: process.env.CLIENT_URL || "http://localhost:3000", // luego seteamos la url de nuestro proyecto
       credentials:true,
       preflightContinue:true,
-    })); 
+    } )); 
     this.app.use(cookieParser());
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
@@ -46,7 +41,6 @@ class Server {
     this.app.use(this.apiPaths.users, userRoutes)
     this.app.use(this.apiPaths.auth, authRoutes)
     this.app.use(this.apiPaths.chat, chatRoutes)
-    this.app.use(this.apiPaths.currentUser, currentUserRoutes)
   }
 
   listen() {
