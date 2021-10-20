@@ -136,7 +136,7 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
     catch (error) {
-        res.status(400).json('Bad request');
+        res.status(400).json({ error: 'Bad request' });
     }
 });
 exports.deleteUser = deleteUser;

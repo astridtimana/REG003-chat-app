@@ -19,17 +19,17 @@ const generateToken_1 = require("../helpers/generateToken");
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
+        if (!email && !password) {
+            return res.status(400).json({
+                error: 'Bad request'
+            });
+        }
         //Verificar si existe el correo
         const existingUser = yield client_1.default.user.findUnique({
             where: {
                 email: email
             },
         });
-        if (!existingUser) {
-            return res.status(404).json({
-                error: 'User not found'
-            });
-        }
         //Verificar el password
         const validPassword = bcryptjs_1.default.compareSync(password, existingUser.password);
         if (!validPassword) {
@@ -42,8 +42,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(200).json({ email: existingUser.email, name: existingUser.name, id: existingUser.id, token });
     }
     catch (error) {
-        console.log(error);
-        res.status(error.status).json(error.message);
+        return res.status(404).json({ error: 'User not found' });
     }
 });
 exports.login = login;
