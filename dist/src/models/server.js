@@ -19,6 +19,7 @@ class Server {
         };
         this.app = (0, express_1.default)();
         this.port = process.env.PORT || '8080';
+        this.app.set("trust proxy", 1);
         this.middlewares();
         this.routes();
     }

@@ -18,6 +18,8 @@ class Server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT || '8080';
+
+    this.app.set("trust proxy", 1);
     
     this.middlewares();
     this.routes();
