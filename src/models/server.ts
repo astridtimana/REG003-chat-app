@@ -5,7 +5,6 @@ import authRoutes from '../routes/auth';
 import chatRoutes from '../routes/chat';
 import errorMiddleware from '../middlewares/errorHandler';
 import cookieParser from 'cookie-parser';
-// import * as pkg from '../../package.json'
 
 class Server {
   public app: Application;
@@ -22,7 +21,6 @@ class Server {
     
     this.middlewares();
     this.routes();
-    // this.app.set('pkg', pkg);
   }
 
   middlewares() {

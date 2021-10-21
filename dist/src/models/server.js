@@ -10,7 +10,6 @@ const auth_1 = __importDefault(require("../routes/auth"));
 const chat_1 = __importDefault(require("../routes/chat"));
 const errorHandler_1 = __importDefault(require("../middlewares/errorHandler"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-// import * as pkg from '../../package.json'
 class Server {
     constructor() {
         this.apiPaths = {
@@ -22,7 +21,6 @@ class Server {
         this.port = process.env.PORT || '8080';
         this.middlewares();
         this.routes();
-        // this.app.set('pkg', pkg);
     }
     middlewares() {
         this.app.use((0, cors_1.default)({
