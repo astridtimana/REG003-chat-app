@@ -11,8 +11,8 @@ class Server {
   public app: Application;
   public port: String;
   public apiPaths = {
+    auth: '/',
     users: '/users',
-    auth: '/auth',
     chat: '/chat',
   }
 
@@ -38,8 +38,8 @@ class Server {
   }
 
   routes() {
-    this.app.use(this.apiPaths.users, userRoutes)
     this.app.use(this.apiPaths.auth, authRoutes)
+    this.app.use(this.apiPaths.users, userRoutes)
     this.app.use(this.apiPaths.chat, chatRoutes)
   }
 

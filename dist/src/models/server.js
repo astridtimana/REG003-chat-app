@@ -14,8 +14,8 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 class Server {
     constructor() {
         this.apiPaths = {
+            auth: '/',
             users: '/users',
-            auth: '/auth',
             chat: '/chat',
         };
         this.app = (0, express_1.default)();
@@ -36,8 +36,8 @@ class Server {
         this.app.use(errorHandler_1.default);
     }
     routes() {
-        this.app.use(this.apiPaths.users, user_1.default);
         this.app.use(this.apiPaths.auth, auth_1.default);
+        this.app.use(this.apiPaths.users, user_1.default);
         this.app.use(this.apiPaths.chat, chat_1.default);
     }
     listen() {
