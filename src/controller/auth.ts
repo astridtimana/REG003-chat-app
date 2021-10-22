@@ -31,7 +31,7 @@ export const login = async (req: Request, res: Response) =>{
 
     const token = await generateToken(existingUser.id);
     
-    res.cookie("token", token, { expires: new Date( Date.now() + 1800000), sameSite: "none"  });
+    res.cookie("token", token, { expires: new Date( Date.now() + 1800000) });
 
     res.status(200).json({email:existingUser.email , name:existingUser.name , id:existingUser.id /* , token */})
       

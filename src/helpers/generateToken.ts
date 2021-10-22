@@ -13,13 +13,13 @@ export const generateToken = (uid: number) =>{
       },(err, token)=>{
         if(err){
             console.log(err)
-            reject('No se pudo generar el JWT')
+            reject('Could not generate JWT')
         } else{
             resolve(token)
         }
       })
     } else {
-      throw new Error('No existe una firma para el token')
+      throw new Error('There is no signature to token')
     }
   })
 }
