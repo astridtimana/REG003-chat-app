@@ -6,7 +6,7 @@ import authRoutes from '../routes/auth';
 import chatRoutes from '../routes/chat';
 import errorMiddleware from '../middlewares/errorHandler';
 import cookieParser from 'cookie-parser';
-import { Server  as SocketServer  } from "socket.io";
+import { Server  as SocketServer, Socket  } from "socket.io";
 
 class Server {
   public app: Application;
@@ -35,9 +35,10 @@ class Server {
 
   }
 
+  
   middlewares() {
     this.app.use(cors( { // dejamos todo este objeto por axios que lo necesita
-      origin: process.env.CLIENT_URL || "http://localhost:3000", // luego seteamos la url de nuestro proyecto
+      origin: "http://localhost:3000", // luego seteamos la url de nuestro proyecto (process.env.CLIENT_URL)
       credentials:true,
       preflightContinue:true,
     } )); 
@@ -47,12 +48,21 @@ class Server {
     this.app.use(errorMiddleware);
   }
   
+  
   routes() {
     this.app.use(this.apiPaths.auth, authRoutes)
     this.app.use(this.apiPaths.users, userRoutes)
     this.app.use(this.apiPaths.chat, chatRoutes)
   }
-
+  
+  configurarSockets() {
+    this.io.on('Connect', (socket:any) => {
+      socket.on('Connected', () => {
+        console.log('User connected :DDDDD')
+      })
+    })
+  }
+  
   execute() {
 
     // Inicializar Middlewares
@@ -60,7 +70,7 @@ class Server {
     this.routes();
 
     // Inicializar sockets
-    //this.configurarSockets();
+    this.configurarSockets();
 
     // Inicializar Server
     this.server.listen( this.port, () => {

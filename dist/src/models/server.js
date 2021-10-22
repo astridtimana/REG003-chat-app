@@ -28,7 +28,7 @@ class Server {
     }
     middlewares() {
         this.app.use((0, cors_1.default)({
-            origin: process.env.CLIENT_URL || "http://localhost:3000",
+            origin: "http://localhost:3000",
             credentials: true,
             preflightContinue: true,
         }));
@@ -42,12 +42,19 @@ class Server {
         this.app.use(this.apiPaths.users, user_1.default);
         this.app.use(this.apiPaths.chat, chat_1.default);
     }
+    configurarSockets() {
+        this.io.on('Connect', (socket) => {
+            socket.on('Connected', () => {
+                console.log('User connected :DDDDD');
+            });
+        });
+    }
     execute() {
         // Inicializar Middlewares
         this.middlewares();
         this.routes();
         // Inicializar sockets
-        //this.configurarSockets();
+        this.configurarSockets();
         // Inicializar Server
         this.server.listen(this.port, () => {
             console.log('Server corriendo en puerto', this.port);
