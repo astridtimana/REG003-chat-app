@@ -12,6 +12,7 @@ class Server {
   public app: Application;
   public port: String;
   public server: any;
+  public listen: any;
   public io: any;
   public apiPaths = {
     auth: '/',
@@ -63,7 +64,11 @@ class Server {
 
     // Inicializar Server
     this.server.listen( this.port, () => {
+<<<<<<< HEAD
         console.log('Server corriendo en puerto', this.port );
+=======
+      console.log('Server corriendo en puerto', this.port );
+>>>>>>> 0757336c0c0424e6fb7ea094dc4774a2cb484a2b
     });
   }
 

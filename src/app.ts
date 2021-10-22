@@ -7,4 +7,4 @@ dotenv.config();
 // Inicializando servidor
 export const server = new Server();
 
-server.listen();
+server.execute();
