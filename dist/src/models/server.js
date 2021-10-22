@@ -4,12 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const http_1 = __importDefault(require("http"));
 const cors_1 = __importDefault(require("cors"));
 const user_1 = __importDefault(require("../routes/user"));
 const auth_1 = __importDefault(require("../routes/auth"));
 const chat_1 = __importDefault(require("../routes/chat"));
 const errorHandler_1 = __importDefault(require("../middlewares/errorHandler"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const socket_io_1 = require("socket.io");
 class Server {
     constructor() {
         this.apiPaths = {
@@ -19,9 +21,10 @@ class Server {
         };
         this.app = (0, express_1.default)();
         this.port = process.env.PORT || '8080';
-        this.app.set("trust proxy", 1);
-        this.middlewares();
-        this.routes();
+        this.server = http_1.default.createServer(this.app);
+        this.app.set("trust proxy", 1); // es necesario?
+        // Configuraciones de sockets
+        this.io = new socket_io_1.Server(this.server);
     }
     middlewares() {
         this.app.use((0, cors_1.default)({
@@ -39,9 +42,15 @@ class Server {
         this.app.use(this.apiPaths.users, user_1.default);
         this.app.use(this.apiPaths.chat, chat_1.default);
     }
-    listen() {
-        this.app.listen(this.port, () => {
-            console.log(`Servidor corriendo en puerto ${this.port}`);
+    execute() {
+        // Inicializar Middlewares
+        this.middlewares();
+        this.routes();
+        // Inicializar sockets
+        //this.configurarSockets();
+        // Inicializar Server
+        this.server.listen(this.port, () => {
+            console.log('Server corriendo en puerto', this.port);
         });
     }
 }
