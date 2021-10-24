@@ -7,6 +7,8 @@ import chatRoutes from '../routes/chat';
 import errorMiddleware from '../middlewares/errorHandler';
 import cookieParser from 'cookie-parser';
 import { Server  as SocketServer, Socket  } from "socket.io";
+// @ts-ignore
+import Sockets from './sockets';
 
 class Server {
   public app: Application;
@@ -38,7 +40,7 @@ class Server {
   
   middlewares() {
     this.app.use(cors( { // dejamos todo este objeto por axios que lo necesita
-      origin: "http://localhost:3000", // luego seteamos la url de nuestro proyecto (process.env.CLIENT_URL)
+      origin: "//localhost:3000", // luego seteamos la url de nuestro proyecto (process.env.CLIENT_URL)
       credentials:true,
       preflightContinue:true,
     } )); 
@@ -56,11 +58,7 @@ class Server {
   }
   
   configurarSockets() {
-    this.io.on('Connect', (socket:any) => {
-      socket.on('Connected', () => {
-        console.log('User connected :DDDDD')
-      })
-    })
+    new Sockets(this.io)
   }
   
   execute() {
