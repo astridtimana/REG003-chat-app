@@ -38,7 +38,7 @@ class Server {
   
   middlewares() {
     this.app.use(cors( { // dejamos todo este objeto por axios que lo necesita
-      origin: "http://localhost:3000", // luego seteamos la url de nuestro proyecto (process.env.CLIENT_URL)
+      origin: process.env.CLIENT_URL || "http://localhost:3000", // luego seteamos la url de nuestro proyecto (process.env.CLIENT_URL)
       credentials:true,
       preflightContinue:true,
     } )); 
