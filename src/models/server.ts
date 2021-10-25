@@ -22,8 +22,6 @@ class Server {
     chat: '/chat',
   }
   
-
-
   constructor() {
     this.app = express();
     this.port = process.env.PORT || '8080';
@@ -40,7 +38,7 @@ class Server {
   
   middlewares() {
     this.app.use(cors( { // dejamos todo este objeto por axios que lo necesita
-      origin: "//localhost:3000", // luego seteamos la url de nuestro proyecto (process.env.CLIENT_URL)
+      origin: "http://localhost:3000", // luego seteamos la url de nuestro proyecto (process.env.CLIENT_URL)
       credentials:true,
       preflightContinue:true,
     } )); 
