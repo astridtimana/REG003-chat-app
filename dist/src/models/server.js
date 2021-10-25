@@ -30,7 +30,7 @@ class Server {
     }
     middlewares() {
         this.app.use((0, cors_1.default)({
-            origin: process.env.CLIENT_URL || "http://localhost:3000",
+            origin: "http://localhost:3000",
             credentials: true,
             preflightContinue: true,
         }));

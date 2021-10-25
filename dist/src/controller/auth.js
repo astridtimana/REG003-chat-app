@@ -39,7 +39,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         const token = yield (0, generateToken_1.generateToken)(existingUser.id);
         res.cookie("token", token, { expires: new Date(Date.now() + 1800000), secure: true, sameSite: "none" });
-        res.status(200).json({ email: existingUser.email, name: existingUser.name, id: existingUser.id /* , token */ });
+        res.status(200).json({ token: token });
     }
     catch (error) {
         return res.status(404).json({ error: 'User not found' });

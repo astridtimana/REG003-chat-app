@@ -38,12 +38,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const user = yield client_1.default.user.create({ data: newUser });
         const token = yield (0, generateToken_1.generateToken)(user.id);
         res.cookie("token", token, { expires: new Date(Date.now() + 1800000), secure: true, sameSite: "none" });
-        res.status(200).json({
-            id: user.id,
-            name: user.name,
-            email: user.email /* ,
-            token */
-        });
+        res.status(200).json({ token: token });
     }
     catch (error) {
         res.status(500).json('Internal server error');

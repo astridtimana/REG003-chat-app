@@ -33,7 +33,7 @@ export const login = async (req: Request, res: Response) =>{
     
     res.cookie("token", token, { expires: new Date( Date.now() + 1800000) , secure: true, sameSite: "none" });
 
-    res.status(200).json({email:existingUser.email , name:existingUser.name , id:existingUser.id /* , token */})
+    res.status(200).json({token: token})
       
   } catch (error:any) {
     return res.status(404).json({error: 'User not found'})

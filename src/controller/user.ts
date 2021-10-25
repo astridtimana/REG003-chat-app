@@ -33,12 +33,7 @@ const createUser = async (req: Request, res: Response) => {
     const token = await generateToken(user.id);
     
     res.cookie("token", token, { expires: new Date( Date.now() + 1800000) , secure: true, sameSite: "none"});
-    res.status(200).json({
-      id: user.id,
-      name: user.name,
-      email: user.email /* ,
-      token */
-    })
+    res.status(200).json({token: token})
 
   } catch (error: any) {
     res.status(500).json('Internal server error');
