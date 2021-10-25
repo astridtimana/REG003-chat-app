@@ -12,6 +12,8 @@ const chat_1 = __importDefault(require("../routes/chat"));
 const errorHandler_1 = __importDefault(require("../middlewares/errorHandler"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const socket_io_1 = require("socket.io");
+// @ts-ignore
+const sockets_1 = __importDefault(require("./sockets"));
 class Server {
     constructor() {
         this.apiPaths = {
@@ -43,11 +45,7 @@ class Server {
         this.app.use(this.apiPaths.chat, chat_1.default);
     }
     configurarSockets() {
-        this.io.on('Connect', (socket) => {
-            socket.on('Connected', () => {
-                console.log('User connected :DDDDD');
-            });
-        });
+        new sockets_1.default(this.io);
     }
     execute() {
         // Inicializar Middlewares

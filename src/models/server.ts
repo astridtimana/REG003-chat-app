@@ -7,6 +7,8 @@ import chatRoutes from '../routes/chat';
 import errorMiddleware from '../middlewares/errorHandler';
 import cookieParser from 'cookie-parser';
 import { Server  as SocketServer, Socket  } from "socket.io";
+// @ts-ignore
+import Sockets from './sockets';
 
 class Server {
   public app: Application;
@@ -20,8 +22,6 @@ class Server {
     chat: '/chat',
   }
   
-
-
   constructor() {
     this.app = express();
     this.port = process.env.PORT || '8080';
@@ -56,11 +56,7 @@ class Server {
   }
   
   configurarSockets() {
-    this.io.on('Connect', (socket:any) => {
-      socket.on('Connected', () => {
-        console.log('User connected :DDDDD')
-      })
-    })
+    new Sockets(this.io)
   }
   
   execute() {
