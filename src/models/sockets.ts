@@ -15,12 +15,13 @@ class Sockets {
         // On connection
         this.io.on('connection', ( socket:any ) => {
 
+            console.log('Cliente conectado')
             // Escuchar evento: mensaje-to-server
-            socket.on('connected', ( ) => {
+            /* socket.on('connected', ( ) => {
                 console.log( 'Cliente conectado' );
             
                 // this.io.emit('mensaje-from-server', data );
-            });
+            }); */
 
             // TODO: Validar el JWT
             // Si el token no es válido, desconectar
