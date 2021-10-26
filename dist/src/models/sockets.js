@@ -8,8 +8,8 @@ class Sockets {
         // On connection
         this.io.on('connection', (socket) => {
             // Escuchar evento: mensaje-to-server
-            socket.on('connected', ( /*data:any*/) => {
-                console.log('User connected :DDDDD');
+            socket.on('connected', () => {
+                console.log('Cliente conectado');
                 // this.io.emit('mensaje-from-server', data );
             });
             // TODO: Validar el JWT
@@ -21,6 +21,10 @@ class Sockets {
             // mensaje-personal
             // TODO: Disconnect
             // Marcar en la DB que el usuario se desconectó
+            socket.on('disconnect', ( /*data:any*/) => {
+                console.log('Cliente desconectado');
+                // this.io.emit('mensaje-from-server', data );
+            });
             // TODO: Emitir todos los usuarios conectados
         });
     }

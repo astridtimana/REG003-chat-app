@@ -28,7 +28,7 @@ class Server {
 
     this.server = http.createServer(this.app);
     
-    this.app.set("trust proxy", 1); // es necesario?
+    // this.app.set("trust proxy", 1); // es necesario?
     
     // Configuraciones de sockets
     this.io = new SocketServer( this.server);

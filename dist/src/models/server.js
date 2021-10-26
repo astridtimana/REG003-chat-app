@@ -24,7 +24,7 @@ class Server {
         this.app = (0, express_1.default)();
         this.port = process.env.PORT || '8080';
         this.server = http_1.default.createServer(this.app);
-        this.app.set("trust proxy", 1); // es necesario?
+        // this.app.set("trust proxy", 1); // es necesario?
         // Configuraciones de sockets
         this.io = new socket_io_1.Server(this.server);
     }
