@@ -14,9 +14,9 @@ export const sendMessages = async (req: Request, res: Response) => {
             body: msg
         }
 
-        const sendMsg = await prisma.message.create({ data: newMessage})
+        const sendMsg = await prisma.message.create({ data: newMessage })
 
-        res.status(200).json({data: sendMsg})
+        res.status(200).json({ data: sendMsg })
 
     } catch (error: any) {
         console.log(error)
@@ -28,38 +28,60 @@ export const sendMessages = async (req: Request, res: Response) => {
 export const getMessages = async (req: Request, res: Response) => {
     console.log('holi')
     try {
-        console.log('linea28')
-        const id = req.params.uid
-        const msgFrom = req.params.from
+        // console.log('linea28')
+        // const id = req.uid
+        // const msgFrom = req.params.id
 
-        const last30 = await prisma.message.findMany({
-            where: {
-                OR: [
-                    {   //@ts-ignore
-                        from: Number(id),
-                        //@ts-ignore
-                        to: Number(msgFrom)
-                    },
-                    {   //@ts-ignore
-                        to: Number(id),
-                        //@ts-ignore
-                        from:Number(msgFrom)
+        const last30 = await prisma.message.findMany()
+
+        res.status(200).json(last30)
+
+    } catch (error: any) {
+        console.log(error)
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+export const getMessagesById = async (req: Request, res: Response) => {
+    console.log('holi')
+    try {
+        console.log('linea28')
+        const id = req.uid
+        const msgFrom = req.params.id
+
+        const last30 = await prisma.message.findMany(
+            {
+                where: {
+                    OR: [
+                        {   //@ts-ignore
+                            userId: Number(id),
+                            //@ts-ignore
+                            toId: Number(msgFrom)
+                        },
+                        {   //@ts-ignore
+                            toId: Number(id),
+                            //@ts-ignore
+                            userId:Number(msgFrom)
+                        },
+                    ],
+
+                    // userId: Number(id),
+                    // toId: Number(msgFrom)
+
+                },
+                orderBy: [
+                    {
+                        createdAt: 'asc',
                     },
                 ],
+                take: 30
             },
-            orderBy: [
-                {
-                    createdAt: 'asc',
-                },
-            ],
-            take:30
-        },
         )
 
         res.status(200).json(last30)
 
     } catch (error: any) {
         console.log(error)
-        res.status(500).json({error:'Internal server error'});
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
