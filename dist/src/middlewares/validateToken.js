@@ -7,6 +7,7 @@ exports.validateToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const validateToken = (req, res, next) => {
     try {
+        // console.log(req.cookies)
         const token = req.cookies.token;
         if (!token) {
             return res.status(401).json({

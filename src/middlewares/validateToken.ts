@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 export const validateToken = (req: Request, res: Response, next: NextFunction) => {
 
     try {
-
+      // console.log(req.cookies)
     const token = req.cookies.token;
 
     if (!token) {

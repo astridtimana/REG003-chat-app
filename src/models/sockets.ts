@@ -1,4 +1,6 @@
 
+import { getUid } from "../helpers/getUid";
+
 
 class Sockets {
 
@@ -15,7 +17,12 @@ class Sockets {
         // On connection
         this.io.on('connection', ( socket:any ) => {
 
+            const uid = getUid(socket.handshake.query['x-token'])
+            //console.log(uid)
+            //console.log(socket.handshake.query)
             console.log('Cliente conectado')
+
+
             // Escuchar evento: mensaje-to-server
             /* socket.on('connected', ( ) => {
                 console.log( 'Cliente conectado' );
@@ -31,9 +38,13 @@ class Sockets {
             // TODO: Emitir usuarios conectados
 
             // TODO: Socket join (unirlos a una sala en particular)
+            socket.join(uid)
         
             // TODO: Escuchar cuando el cliente manda un mensaje
             // mensaje-personal
+            socket.on('mensaje-personal', (payload:any)=>{
+                console.log(payload)
+            })
 
             // TODO: Disconnect
             // Marcar en la DB que el usuario se desconectó
